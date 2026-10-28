@@ -1,0 +1,25 @@
+# Key-Value Databases Lab – identical on Windows, macOS and Linux.
+# Only requirement on the laptop: Docker Desktop.
+name: kv-lab
+
+services:
+  redis:
+    image: redis:7.4.7
+    # Lab setup: in-memory only, no persistence, no published port
+    # (avoids clashes with a locally installed Redis on port 6379).
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  lab:
+    build: ./lab
+    image: kv-lab-python:1.0
+    profiles: ["tools"]   # not started by "up", only via "docker compose run"
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      redis:
+        condition: service_healthy

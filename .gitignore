@@ -1,0 +1,6 @@
+# Docker images are shipped as release assets, not in git
+images.tar.gz
+*.zip
+__pycache__/
+*.pyc
+.DS_Store
